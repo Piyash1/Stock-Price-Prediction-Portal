@@ -2,12 +2,12 @@ import { motion } from "framer-motion";
 
 const Main = () => {
   return (
-    <section className="h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-b from-violet-900 to-black">
+    <section className="h-[50rem]  relative overflow-hidden flex items-center justify-center bg-gradient-to-b from-violet-900 to-black">
 
       {/* Overlay Background Layer */}
       <div className="absolute inset-0 bg-[rgba(255,255,255,0.03)] pointer-events-none z-0" />
 
-      <div className="relative z-10 text-center max-w-3xl px-6">
+      <div className="relative z-10 text-center max-w-3xl px-6 -mt-10">
         {/* Heading */}
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
