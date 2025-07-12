@@ -5,6 +5,7 @@ import Main from './components/Main'
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
 import Register from './components/Register'
 import Login from './components/Login'
+import AuthProvider from './AuthProvider'
 
 function AppLayout() {
   return (
@@ -24,9 +25,11 @@ function AppLayout() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppLayout />
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <AppLayout />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

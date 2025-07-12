@@ -3,8 +3,11 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -13,7 +16,7 @@ const Register = () => {
 
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false); // ✅ useState instead of useActionState
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -35,13 +38,16 @@ const Register = () => {
       setSuccess(true);
       setFormData({ username: "", email: "", password: "" });
 
-      setTimeout(() => setSuccess(false), 3000);
+      setTimeout(() => {
+        setSuccess(false);
+        navigate("/login"); // ✅ Redirect to login page
+      }, 1500);
     } catch (err) {
       if (err.response?.data) {
         setErrors(err.response.data);
       }
     } finally {
-      setTimeout(() => setLoading(false), 1000); // simulate 1s loading
+      setLoading(false);
     }
   };
 
@@ -53,12 +59,16 @@ const Register = () => {
         transition={{ duration: 0.8 }}
         className="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md"
       >
-        <h1 className="text-3xl font-bold text-center text-white mb-6">Create Account</h1>
+        <h1 className="text-3xl font-bold text-center text-white mb-6">
+          Create Account
+        </h1>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           {/* Username */}
           <div>
-            <label htmlFor="username" className="block text-sm text-gray-300 mb-1">Username</label>
+            <label htmlFor="username" className="block text-sm text-gray-300 mb-1">
+              Username
+            </label>
             <input
               type="text"
               name="username"
@@ -68,12 +78,16 @@ const Register = () => {
               required
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-white"
             />
-            {errors.username && <p className="text-sm text-red-400 mt-1">{errors.username}</p>}
+            {errors.username && (
+              <p className="text-sm text-red-400 mt-1">{errors.username}</p>
+            )}
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm text-gray-300 mb-1">Email</label>
+            <label htmlFor="email" className="block text-sm text-gray-300 mb-1">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -83,12 +97,16 @@ const Register = () => {
               required
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-white"
             />
-            {errors.email && <p className="text-sm text-red-400 mt-1">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-sm text-red-400 mt-1">{errors.email}</p>
+            )}
           </div>
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm text-gray-300 mb-1">Password</label>
+            <label htmlFor="password" className="block text-sm text-gray-300 mb-1">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -98,7 +116,9 @@ const Register = () => {
               required
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-white"
             />
-            {errors.password && <p className="text-sm text-red-400 mt-1">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-sm text-red-400 mt-1">{errors.password}</p>
+            )}
           </div>
 
           {/* Success Alert */}
@@ -107,13 +127,13 @@ const Register = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="mb-4 px-4 py-3 rounded-lg bg-green-100 border border-green-300 text-green-800 text-sm"
+              className="mb-4 px-4 py-3 rounded-lg bg-green-100 border border-green-300 text-green-800 text-sm text-center"
             >
-              ✅ Registration successful!
+              ✅ Registration successful! Redirecting to login...
             </motion.div>
           )}
 
-          {/* Submit Button with Loading Spinner */}
+          {/* Submit Button */}
           <motion.button
             type="submit"
             whileHover={{ scale: !loading ? 1.03 : 1 }}

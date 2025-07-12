@@ -1,26 +1,60 @@
-import { useState } from "react";
+import { useState,useContext } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { AuthContext } from "../AuthProvider";
 
 const Login = () => {
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     username: "",
     password: ""
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext)
 
   const handleChange = (e) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
+    setError(""); // clear previous error
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Logging in:", formData);
-    // TODO: Replace with POST request to /api/v1/login/
+    setLoading(true);
+
+    try {
+      const res = await axios.post("http://127.0.0.1:8000/api/v1/token/", formData);
+      console.log("Login successful:", res.data);
+      setSuccess(true);
+
+      // Optionally save token to localStorage
+      localStorage.setItem("access", res.data.access);
+      localStorage.setItem("refresh", res.data.refresh);
+      setIsLoggedIn(true)
+
+      setTimeout(() => {
+        setSuccess(false);
+        navigate("/"); // redirect to homepage
+      }, 1500);
+    } catch (err) {
+      console.error('Invalid Credentials')
+      if (err.response?.data?.detail) {
+        setError(err.response.data.detail); // e.g., "No active account found"
+      } else {
+        setError("Login failed. Please try again.");
+      }
+    } finally {
+      setTimeout(() => setLoading(false), 1000);
+    }
   };
 
   return (
@@ -68,14 +102,43 @@ const Login = () => {
             />
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <p className="text-sm text-red-400 mt-1 text-center">{error}</p>
+          )}
+
+          {/* Success Message */}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mb-4 px-4 py-3 rounded-lg bg-green-100 border border-green-300 text-green-800 text-sm text-center"
+            >
+              ✅ Login successful!
+            </motion.div>
+          )}
+
           {/* Submit Button */}
           <motion.button
             type="submit"
-            whileHover={{ scale: 1.03 }}
+            whileHover={{ scale: !loading ? 1.03 : 1 }}
             whileTap={{ scale: 0.97 }}
-            className="w-full px-4 py-2 mt-4 bg-gradient-to-r from-gray-400 to-gray-100 text-violet-700 font-bold rounded-xl hover:from-violet-700 hover:to-purple-700 hover:text-white transition-all duration-500"
+            disabled={loading}
+            className={`w-full px-4 py-2 mt-4 font-bold rounded-xl transition-all duration-500 ${
+              loading
+                ? "bg-gray-400 text-gray-100 cursor-not-allowed"
+                : "bg-gradient-to-r from-gray-400 to-gray-100 text-violet-700 hover:from-violet-700 hover:to-purple-700 hover:text-white"
+            }`}
           >
-            Login
+            {loading ? (
+              <span className="flex justify-center items-center gap-2">
+                <FontAwesomeIcon icon={faSpinner} spin />
+                Please wait...
+              </span>
+            ) : (
+              "Login"
+            )}
           </motion.button>
 
           {/* Register Redirect */}
