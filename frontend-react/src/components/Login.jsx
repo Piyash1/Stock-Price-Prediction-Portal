@@ -1,6 +1,6 @@
-import { useState,useContext } from "react";
+import { useState, useContext } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,8 @@ import { AuthContext } from "../AuthProvider";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const cameFromGetStarted = location.state?.fromGetStarted;
 
   const [formData, setFormData] = useState({
     username: "",
@@ -17,14 +19,15 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext)
+
+  const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
-    setError(""); // clear previous error
+    setError("");
   };
 
   const handleSubmit = async (e) => {
@@ -34,31 +37,32 @@ const Login = () => {
     try {
       const res = await axios.post("http://127.0.0.1:8000/api/v1/token/", formData);
       console.log("Login successful:", res.data);
+
       setSuccess(true);
-
-      // Optionally save token to localStorage
-      localStorage.setItem("access", res.data.access);
+      login(res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
-      setIsLoggedIn(true)
 
-      setTimeout(() => {
-        setSuccess(false);
-        navigate("/"); // redirect to homepage
-      }, 1500);
+      // ✅ Conditional redirect
+      if (cameFromGetStarted) {
+        navigate("/predict");
+      } else {
+        navigate("/");
+      }
+
     } catch (err) {
-      console.error('Invalid Credentials')
+      console.error('Invalid Credentials');
       if (err.response?.data?.detail) {
-        setError(err.response.data.detail); // e.g., "No active account found"
+        setError(err.response.data.detail);
       } else {
         setError("Login failed. Please try again.");
       }
     } finally {
-      setTimeout(() => setLoading(false), 1000);
+      setLoading(false);
     }
   };
 
   return (
-    <section className="h-[50rem] flex items-center justify-center bg-gradient-to-b from-black via-violet-950 to-gray-900 px-6 py-10">
+    <section className="h-[45rem] flex items-center justify-center bg-gradient-to-b from-black via-violet-950 to-gray-900 px-6 py-10">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -70,7 +74,6 @@ const Login = () => {
         </h1>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
-          {/* Username */}
           <div>
             <label htmlFor="username" className="block text-sm text-gray-300 mb-1">
               Username
@@ -86,7 +89,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Password */}
           <div>
             <label htmlFor="password" className="block text-sm text-gray-300 mb-1">
               Password
@@ -102,12 +104,10 @@ const Login = () => {
             />
           </div>
 
-          {/* Error Message */}
           {error && (
             <p className="text-sm text-red-400 mt-1 text-center">{error}</p>
           )}
 
-          {/* Success Message */}
           {success && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -119,7 +119,6 @@ const Login = () => {
             </motion.div>
           )}
 
-          {/* Submit Button */}
           <motion.button
             type="submit"
             whileHover={{ scale: !loading ? 1.03 : 1 }}
@@ -141,7 +140,6 @@ const Login = () => {
             )}
           </motion.button>
 
-          {/* Register Redirect */}
           <p className="text-sm text-gray-400 text-center mt-3">
             Don't have an account?{" "}
             <button

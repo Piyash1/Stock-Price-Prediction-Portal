@@ -1,18 +1,33 @@
-import {useState, useContext, createContext} from 'react'
+// AuthProvider.jsx
+import { createContext, useEffect, useState } from "react";
 
-//Create the context
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
-const AuthProvider = ({children}) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(
-        !!localStorage.getItem('access')
-    )
+const AuthProvider = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check login status on page load
+  useEffect(() => {
+    const token = localStorage.getItem("access");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const login = (accessToken) => {
+    localStorage.setItem("access", accessToken);
+    setIsLoggedIn(true);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    setIsLoggedIn(false);
+  };
+
   return (
-    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
-        {children}
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+      {children}
     </AuthContext.Provider>
-  )
-}
+  );
+};
 
-export default AuthProvider
-export {AuthContext};
+export default AuthProvider;
