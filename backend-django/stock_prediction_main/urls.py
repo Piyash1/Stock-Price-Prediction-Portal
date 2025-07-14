@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     #Base api Endpoint
-    path('api/v1/', include('api.urls'))
+    path('api/v1/', include('api.urls')),
+    path('api/v1/', include('newsapi.urls')),
 ]
