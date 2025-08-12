@@ -2,14 +2,6 @@ import json
 import base64
 from io import BytesIO
 import os
-import numpy as np
-import pandas as pd
-import yfinance as yf
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from keras.models import load_model
-from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -17,6 +9,8 @@ from django.http import JsonResponse
 
 
 def plot_to_base64(fig):
+    # Lazy import to avoid hard dependency when predictions are disabled
+    import matplotlib.pyplot as plt  # type: ignore
     buf = BytesIO()
     fig.savefig(buf, format="png")
     plt.close(fig)
@@ -25,6 +19,7 @@ def plot_to_base64(fig):
 
 
 def plot_graph(figsize, values, full_data, extra_data=False, extra_dataset=None):
+    import matplotlib.pyplot as plt  # type: ignore
     fig = plt.figure(figsize=figsize)
     plt.plot(values, 'orange')
     plt.plot(full_data['Close'], 'b')
@@ -39,6 +34,24 @@ def stock_plot_api(request):
         return JsonResponse({'message': 'Use POST with {"symbol": "GOOG"}'}, status=405)
 
     try:
+        # Try importing heavy ML deps lazily. If unavailable (e.g., Render free tier), return a friendly error.
+        try:
+            import numpy as np  # type: ignore
+            import pandas as pd  # type: ignore
+            import yfinance as yf  # type: ignore
+            import matplotlib  # type: ignore
+            matplotlib.use('Agg')
+            import matplotlib.pyplot as plt  # noqa: F401
+            from sklearn.preprocessing import MinMaxScaler  # type: ignore
+        except Exception:
+            return JsonResponse({'error': 'Prediction service is not available on this deployment. Please try locally or enable ML dependencies.'}, status=501)
+
+        # Import Keras load_model lazily
+        try:
+            from keras.models import load_model  # type: ignore
+        except Exception:
+            return JsonResponse({'error': 'Model runtime not available. Please enable TensorFlow/Keras.'}, status=501)
+
         body = json.loads(request.body)
         symbol = body.get('symbol', '').upper()
 
