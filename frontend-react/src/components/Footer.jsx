@@ -15,24 +15,24 @@ const Footer = () => {
           transition={{ duration: 0.6, delay: 0.7 }}
           className="flex space-x-6"
         >
-          <a
-            href="#"
-            className="hover:text-violet-400 transition-colors duration-300"
-          >
-            <FiGithub className="w-5 h-5" />
-          </a>
-          <a
-            href="#"
-            className="hover:text-violet-400 transition-colors duration-300"
-          >
-            <FiTwitter className="w-5 h-5" />
-          </a>
-          <a
-            href="#"
-            className="hover:text-violet-400 transition-colors duration-300"
-          >
-            <FiLinkedin className="w-5 h-5" />
-          </a>
+          {[
+            { Icon: FiGithub, href: import.meta.env.VITE_GITHUB_URL, label: "GitHub" },
+            { Icon: FiTwitter, href: import.meta.env.VITE_TWITTER_URL, label: "Twitter" },
+            { Icon: FiLinkedin, href: import.meta.env.VITE_LINKEDIN_URL, label: "LinkedIn" },
+          ]
+            .filter(l => !!l.href)
+            .map(({ Icon, href, label }, idx) => (
+              <a
+                key={idx}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="hover:text-violet-400 transition-colors duration-300"
+              >
+                <Icon className="w-5 h-5" />
+              </a>
+            ))}
         </motion.div>
 
         {/* Copyright */}
