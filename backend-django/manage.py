@@ -7,6 +7,7 @@ import sys
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stock_prediction_main.settings')
+    # Render provides PORT env and expects app to bind to it via gunicorn in Procfile
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
