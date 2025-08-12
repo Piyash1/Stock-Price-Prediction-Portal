@@ -19,7 +19,7 @@ const Prediction = () => {
     setError("");
     setPlots(null);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/stock-plots/", {
+      const response = await fetch("https://stock-price-prediction-portal.onrender.com/api/v1/stock-plots/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ symbol }),

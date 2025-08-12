@@ -29,7 +29,7 @@ const Main = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:8000/api/v1/stock-news/", {
+      const res = await fetch("https://stock-price-prediction-portal.onrender.com/api/v1/stock-news/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

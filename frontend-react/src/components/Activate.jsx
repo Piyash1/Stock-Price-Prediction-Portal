@@ -11,7 +11,7 @@ export default function Activate() {
   useEffect(() => {
     async function activate() {
       try {
-        const res = await axios.get(`http://localhost:8000/api/v1/activate/${uid}/${token}/`);
+        const res = await axios.get(`https://stock-price-prediction-portal.onrender.com/api/v1/activate/${uid}/${token}/`);
         setMessage(res.data.detail || "Account activated successfully.");
         setTimeout(() => navigate("/"), 1200);
       } catch (err) {

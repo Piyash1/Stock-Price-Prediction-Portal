@@ -31,7 +31,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/register/", formData);
+      const res = await axios.post("https://stock-price-prediction-portal.onrender.com/api/v1/register/", formData);
       console.log("Registered:", res.data);
 
       setErrors({});
