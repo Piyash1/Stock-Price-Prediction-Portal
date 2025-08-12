@@ -30,7 +30,8 @@ class Register_view(generics.CreateAPIView):
     def send_activation_email(self, user: User) -> None:
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-        activate_url = f"{getattr(settings, 'FRONTEND_BASE_URL', 'http://localhost:5173')}/activate/{uid}/{token}"
+        frontend_base = getattr(settings, 'FRONTEND_BASE_URL', 'http://localhost:5173').rstrip('/')
+        activate_url = f"{frontend_base}/activate/{uid}/{token}"
 
         subject = "Activate your account"
         message = (
