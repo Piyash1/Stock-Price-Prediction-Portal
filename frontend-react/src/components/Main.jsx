@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../config";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Main = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("https://stock-price-prediction-portal.onrender.com/api/v1/stock-news/", {
+      const res = await fetch(`${API_BASE}/api/v1/stock-news/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

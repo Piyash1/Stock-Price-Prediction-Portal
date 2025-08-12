@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE } from "../config";
 
 export default function Activate() {
   const { uid, token } = useParams();
@@ -11,7 +12,7 @@ export default function Activate() {
   useEffect(() => {
     async function activate() {
       try {
-        const res = await axios.get(`https://stock-price-prediction-portal.onrender.com/api/v1/activate/${uid}/${token}/`);
+        const res = await axios.get(`${API_BASE}/api/v1/activate/${uid}/${token}/`);
         setMessage(res.data.detail || "Account activated successfully.");
         setTimeout(() => navigate("/"), 1200);
       } catch (err) {

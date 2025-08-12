@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { API_BASE } from "../config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
@@ -31,7 +32,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("https://stock-price-prediction-portal.onrender.com/api/v1/register/", formData);
+      const res = await axios.post(`${API_BASE}/api/v1/register/`, formData);
       console.log("Registered:", res.data);
 
       setErrors({});

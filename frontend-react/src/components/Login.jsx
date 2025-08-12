@@ -5,6 +5,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../AuthProvider";
+import { API_BASE } from "../config";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/v1/token/", formData);
+      const res = await axios.post(`${API_BASE}/api/v1/token/`, formData);
       console.log("Login successful:", res.data);
 
       setSuccess(true);

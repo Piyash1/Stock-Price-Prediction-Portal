@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { API_BASE } from "../config";
 
 const Prediction = () => {
   const [symbol, setSymbol] = useState("");
@@ -19,7 +20,7 @@ const Prediction = () => {
     setError("");
     setPlots(null);
     try {
-      const response = await fetch("https://stock-price-prediction-portal.onrender.com/api/v1/stock-plots/", {
+      const response = await fetch(`${API_BASE}/api/v1/stock-plots/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ symbol }),
