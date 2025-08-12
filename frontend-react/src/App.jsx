@@ -8,6 +8,8 @@ import Login from './components/Login';
 import Prediction from './components/Prediction';
 import AuthProvider from './AuthProvider';
 import ProtectedRoute from './ProtectedRoute'; // ✅ import this
+import Activate from './components/Activate';
+import CheckEmail from './components/CheckEmail';
 
 function AppLayout() {
   return (
@@ -18,6 +20,8 @@ function AppLayout() {
           <Route path="/" element={<Main />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/check-email" element={<CheckEmail />} />
+          <Route path="/activate/:uid/:token" element={<Activate />} />
           <Route
             path="/predict"
             element={

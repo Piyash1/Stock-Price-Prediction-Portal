@@ -14,14 +14,28 @@ class UserSerializer(serializers.ModelSerializer):
         return value
 
     def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
+        email_lower = value.strip().lower()
+        if User.objects.filter(email=email_lower).exists():
             raise serializers.ValidationError("Email is already registered.")
-        return value
+
+        # Only allow Gmail addresses
+        allowed_domains = {"gmail.com", "googlemail.com"}
+        try:
+            domain = email_lower.split("@", 1)[1]
+        except IndexError:
+            raise serializers.ValidationError("Enter a valid email address.")
+        if domain not in allowed_domains:
+            raise serializers.ValidationError("Only Gmail addresses are allowed.")
+
+        return email_lower
 
     def create(self, validated_data):
+        # Create the user as inactive until email confirmation
         user = User.objects.create_user(
-            validated_data['username'],
-            validated_data['email'],
-            validated_data['password']
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
         )
+        user.is_active = False
+        user.save(update_fields=["is_active"])
         return user

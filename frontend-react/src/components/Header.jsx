@@ -3,6 +3,7 @@ import { FiGithub, FiTwitter, FiLinkedin } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../AuthProvider";
+import logo from "../assets/logo.png";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -25,9 +26,7 @@ const Header = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ type: "spring", stiffness: 100, damping: 25, delay: 0.3 }}
         >
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-gray-500 to-gray-100 flex items-center justify-center text-purple-600 font-bold text-xl mr-3">
-            S
-          </div>
+          <img src={logo} alt="Logo" className="h-10 w-10 rounded-xl object-cover mr-3" />
           <span className="text-xl font-bold bg-gradient-to-r from-gray-300 to-gray-100 bg-clip-text text-transparent">
             Stock Prediction Portal
           </span>
@@ -35,18 +34,27 @@ const Header = () => {
 
         {/* Social Icons */}
         <div className="md:flex hidden items-center space-x-4">
-          {[FiGithub, FiTwitter, FiLinkedin].map((Icon, i) => (
-            <motion.a
-              key={i}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.3, duration: 0.8 }}
-              className="text-gray-700 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors duration-300"
-              href="#"
-            >
-              <Icon className="w-5 h-5" />
-            </motion.a>
-          ))}
+          {[
+            { Icon: FiGithub, href: import.meta.env.VITE_GITHUB_URL, label: "GitHub" },
+            { Icon: FiTwitter, href: import.meta.env.VITE_TWITTER_URL, label: "Twitter" },
+            { Icon: FiLinkedin, href: import.meta.env.VITE_LINKEDIN_URL, label: "LinkedIn" },
+          ]
+            .filter(link => !!link.href)
+            .map(({ Icon, href, label }, i) => (
+              <motion.a
+                key={i}
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.3, duration: 0.8 }}
+                className="text-gray-700 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors duration-300"
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+              >
+                <Icon className="w-5 h-5" />
+              </motion.a>
+            ))}
         </div>
 
         {/* Auth Buttons */}

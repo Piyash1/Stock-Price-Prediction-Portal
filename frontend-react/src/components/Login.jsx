@@ -50,9 +50,16 @@ const Login = () => {
       }
 
     } catch (err) {
-      console.error('Invalid Credentials');
-      if (err.response?.data?.detail) {
-        setError(err.response.data.detail);
+      console.error('Login error', err);
+      const detail = err.response?.data?.detail;
+      // Show a friendlier message if account is inactive
+      if (detail && typeof detail === 'string' && (
+        detail.toLowerCase().includes('inactive') ||
+        detail.toLowerCase().includes('no active account')
+      )) {
+        setError('Please verify your email before logging in.');
+      } else if (detail) {
+        setError(detail);
       } else {
         setError("Login failed. Please try again.");
       }

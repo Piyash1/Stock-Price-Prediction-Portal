@@ -35,13 +35,8 @@ const Register = () => {
       console.log("Registered:", res.data);
 
       setErrors({});
-      setSuccess(true);
-      setFormData({ username: "", email: "", password: "" });
-
-      setTimeout(() => {
-        setSuccess(false);
-        navigate("/login"); // ✅ Redirect to login page
-      }, 1500);
+      // Go to confirmation page with email in state
+      navigate("/check-email", { state: { email: formData.email } });
     } catch (err) {
       if (err.response?.data) {
         setErrors(err.response.data);
@@ -129,7 +124,7 @@ const Register = () => {
               transition={{ duration: 0.4 }}
               className="mb-4 px-4 py-3 rounded-lg bg-green-100 border border-green-300 text-green-800 text-sm text-center"
             >
-              ✅ Registration successful! Redirecting to login...
+              ✅ Registration successful! Please check your Gmail inbox for an activation link.
             </motion.div>
           )}
 
